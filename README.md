@@ -1,4 +1,4 @@
-# gather
+# gather ![NPM Version](https://img.shields.io/npm/v/gather.svg?style=flat-square) ![Build Status](https://img.shields.io/travis/divshot/gather/master.svg?style=flat-square) 
 
 Gather resources and inject them into your html pages
 
