@@ -1,0 +1,31 @@
+{
+  "name": "gather",
+  "version": "1.0.0",
+  "description": "Gather resources and inject them into your html pages",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "node test/index.js | tap-spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/divshot/gather.git"
+  },
+  "keywords": [
+    "inject",
+    "fetch",
+    "ajax",
+    "resource",
+    "remote",
+    "static"
+  ],
+  "author": "Divshot",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/divshot/gather/issues"
+  },
+  "homepage": "https://github.com/divshot/gather",
+  "devDependencies": {
+    "tap-spec": "^2.1.1",
+    "tape": "^3.0.3"
+  }
+}
