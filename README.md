@@ -66,13 +66,14 @@ Sample HTML file
 ### gather([options])
 
 * `options`
-  * `injectors` - Decorator to add custom injections made available in your html document. See [Injectors Documentation]()
+  * `injectors` - Decorator to add custom injections made available in your html document. See [Injectors Documentation](#injectors).
 
-### gather.inject(filepath, function (err, contents) {})
+### gather.injectFile(filepath[, options, function (err, contents) {}])
 
 Parse and inject a file. By default, the function returns a stream. You may also provide a callback and it will be called and return the parsed file contents.
 
-* `filepath` - the path to the file to parse and inject
+* `filepath` - The path to the file to parse and inject.
+* `options` - Options similar to running [`gather(options)`](#gatheroptions)
 
 ## Injectors
 
@@ -84,7 +85,7 @@ module.exports = function (options, done) {
 });
 ```
 
-THe injector function recieves 2 parameters:
+The injector function recieves 2 parameters:
 
 * `options` - This is an object map of the options in the commented markup. If the html had `<!-- inject:fetch http://some.site.com/page timeout=5 assign=bob -->`, the options would be
   * `timeout: 5`
