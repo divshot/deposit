@@ -17,6 +17,7 @@ var gather = require('gather');
 
 var gatherer = gather();
 
+// Set up injectors
 gatherer.injector('fetch', require('gather-fetch'));
 gatherer.injector('env', function (options, done) {
   
