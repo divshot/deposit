@@ -68,7 +68,7 @@ Sample HTML file
 * `options`
   * `injectors` - Decorator to add custom injections made available in your html document. See [Injectors Documentation](#injectors).
 
-### gather.injectFile(filepath[, options, function (err, contents) {}])
+### gather.file(filepath[, options, function (err, contents) {}])
 
 Parse and inject a file. By default, the function returns a stream. You may also provide a callback and it will be called and return the parsed file contents.
 
