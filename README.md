@@ -15,15 +15,14 @@ var fs = require('fs');
 var http = require('http');
 var gather = require('gather');
 
-var gatherer = gather({
-  injectors: {
-    fetch: require('gather-fetch'),
-    env: function (options, done) {
-      
-      // Do some stuff
-      done();
-    }
-  }
+var gatherer = gather();
+
+gatherer.injector('fetch', require('gather-fetch'));
+gatherer.injector('env', function (options, done) {
+  
+  // Do stuff
+  
+  done();
 });
 
 http.createServer(function (req, res) {
@@ -66,14 +65,17 @@ Sample HTML file
 ### gather([options])
 
 * `options`
-  * `injectors` - Decorator to add custom injections made available in your html document. See [Injectors Documentation](#injectors).
 
-### gather.file(filepath[, options, function (err, contents) {}])
+### gatherer.file(filepath[, options, function (err, contents) {}])
 
 Parse and inject a file. By default, the function returns a stream. You may also provide a callback and it will be called and return the parsed file contents.
 
 * `filepath` - The path to the file to parse and inject.
 * `options` - Options similar to running [`gather(options)`](#gatheroptions)
+
+### gatherer.injector(name, function (options, done) {})
+
+* `name` - The name of the inejctor. This is the name you will use in your html document. Only slug-valid names are allowed (i.e. `fetch`, `custom-injector`, etc).
 
 ## Injectors
 
