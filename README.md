@@ -1,4 +1,3 @@
-gather
-======
+# gather
 
-Inject resources into your html pages
+Gather resources and inject them into your html pages
