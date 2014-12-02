@@ -2,6 +2,12 @@
 
 Gather resources and inject them into your html pages
 
+## Install
+
+```
+npm install gather --save
+```
+
 ## Usage
 
 ```js
@@ -76,4 +82,18 @@ Injectors are used to put dynamic content into the html as static content. Injec
 module.exports = function (options, done) {
 
 });
+```
+
+THe injector function recieves 2 parameters:
+
+* `options` - This is an object map of the options in the commented markup. If the html had `<!-- inject:fetch http://some.site.com/page timeout=5 assign=bob -->`, the options would be
+  * `timeout: 5`
+  * `assign: bob`
+* `done` - This callback gets called with these values - `done(err, content)`. The content will be injected and replace the commented markup
+
+## Run Test
+
+```
+npm install
+npm test
 ```
