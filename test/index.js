@@ -26,7 +26,7 @@ test('adding injector', function (t) {
   t.end();
 });
 
-test('parsing comments', function (t) {
+test('parsing blocks', function (t) {
   
   var g = gather();
   
@@ -58,6 +58,43 @@ test('parsing comments', function (t) {
   g.blocks(TEST1_FILE_PATH, function (err, blocks) {
     
     t.deepEqual(blocks, expected, 'parsed blocks object');
+    t.end();
+  });
+});
+
+test('executes injectors in html from file', function (t) {
+  
+  var g = gather();
+  
+  g.injector('test', function (options, done) {
+    
+    done(null, '<!-- injected test -->');
+  });
+    
+  var expected = [
+    '<!DOCTYPE html>',
+    '<html>',
+    '<head>',
+    '  <meta charset="utf-8">',
+    '  <meta http-equiv="X-UA-Compatible" content="IE=edge">',
+    '  <title></title>',
+    '  ',
+    '<!-- injected test -->',
+    '  ',
+    '</head>',
+    '<body>',
+    '  ',
+    '  <!-- inject:fetch url=http://google.com target=data -->',
+    '  <script> window.data = []; </script>',
+    '  <!-- endinject -->',
+    '  ',
+    '</body>',
+    '</html>\n'
+  ].join('\n');
+  
+  g.file(TEST1_FILE_PATH, function (err, content) {
+    
+    t.equal(content, expected, 'injected contents');
     t.end();
   });
 });

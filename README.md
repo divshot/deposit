@@ -67,12 +67,11 @@ Sample HTML file
 
 * `options`
 
-### g.file(filepath[, options, function (err, contents) {}])
+### g.file(filepath[, function (err, contents) {}])
 
 Parse and inject a file. By default, the function returns a stream. You may also provide a callback and it will be called and return the parsed file contents.
 
 * `filepath` - The path to the file to parse and inject.
-* `options` - Options similar to running [`gather(options)`](#gatheroptions)
 
 ### g.injector(name, function (options, done) {})
 
