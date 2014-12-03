@@ -15,11 +15,11 @@ var fs = require('fs');
 var http = require('http');
 var gather = require('gather');
 
-var gatherer = gather();
+var g = gather();
 
 // Set up injectors
-gatherer.injector('fetch', require('gather-fetch'));
-gatherer.injector('env', function (options, done) {
+g.injector('fetch', require('gather-fetch'));
+g.injector('env', function (options, done) {
   
   // Do stuff
   
@@ -29,7 +29,7 @@ gatherer.injector('env', function (options, done) {
 http.createServer(function (req, res) {
 
   fs.createReadStream('/path/to/some/file.html')
-    .pipe(gatherer)
+    .pipe(g)
     .pipe(res);
 
 }).listen(3000);
@@ -51,7 +51,7 @@ Sample HTML file
 </head>
 <body>
   
-  <!-- inject:fetch http://some.site.com/page timeout=5 assign=bob -->
+  <!-- inject:fetch url=http://some.site.com/page timeout=5 assign=bob -->
   <h1>Default Content</h1>
   <p>This is what it looks like if the data doesn’t get fetched (or gets fetched with an error).</p>
   <!-- endinject -->
@@ -67,16 +67,22 @@ Sample HTML file
 
 * `options`
 
-### gatherer.file(filepath[, options, function (err, contents) {}])
+### g.file(filepath[, options, function (err, contents) {}])
 
 Parse and inject a file. By default, the function returns a stream. You may also provide a callback and it will be called and return the parsed file contents.
 
 * `filepath` - The path to the file to parse and inject.
 * `options` - Options similar to running [`gather(options)`](#gatheroptions)
 
-### gatherer.injector(name, function (options, done) {})
+### g.injector(name, function (options, done) {})
 
 * `name` - The name of the inejctor. This is the name you will use in your html document. Only slug-valid names are allowed (i.e. `fetch`, `custom-injector`, etc).
+
+### g.blocks(filepath, function (err blocks) {})
+
+Parse the given html file and return an object representation of the parseable blocks.
+
+* `filepath` - The path to the file to parse and inject.
 
 ## Injectors
 
