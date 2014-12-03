@@ -53,7 +53,7 @@ test('adding injector', function (t) {
   t.end();
 });
 
-test.only('parsing blocks', function (t) {
+test('parsing blocks', function (t) {
   
   var g = gather();
   
