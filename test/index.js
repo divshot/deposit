@@ -30,26 +30,32 @@ test('parsing comments', function (t) {
   
   var g = gather();
   
-  g.blocks(TEST1_FILE_PATH, function (err, blocks) {
-    
-    var expected = {
-      test: {
-        insertAt: 8,
-        options: {
-          key1: 'value1',
-          key2: 'value2'
-        },
-        content: '  <script> window.__ = {}; </script>'
+  var expected = {
+    test: {
+      location:{
+        start: 8,
+        end: 10
       },
-      fetch: {
-        insertAt: 15,
-        options: {
-          url: 'http://google.com',
-          target: 'data'
-        },
-        content: '  <script> window.data = []; </script>'
-      }
+      options: {
+        key1: 'value1',
+        key2: 'value2'
+      },
+      content: '  <script> window.__ = {}; </script>'
+    },
+    fetch: {
+      location: {
+        start: 15,
+        end: 17
+      },
+      options: {
+        url: 'http://google.com',
+        target: 'data'
+      },
+      content: '  <script> window.data = []; </script>'
     }
+  };
+  
+  g.blocks(TEST1_FILE_PATH, function (err, blocks) {
     
     t.deepEqual(blocks, expected, 'parsed blocks object');
     t.end();
