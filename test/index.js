@@ -3,8 +3,35 @@ var gather = require('../lib');
 var test = require('tape');
 var eos = require('end-of-stream');
 var concat = require('concat-stream');
+var split = require('split');
 
 var TEST1_FILE_PATH = __dirname + '/fixtures/test1.html';
+var TEST1_FILE_BLOCKS = [
+  {
+    name: 'test',
+    location:{
+      start: 8,
+      end: 10
+    },
+    options: {
+      key1: 'value1',
+      key2: 'value2'
+    },
+    default: '  <script> window.__ = {}; </script>'
+  },
+  {
+    name: 'fetch',
+    location: {
+      start: 15,
+      end: 17
+    },
+    options: {
+      url: 'http://google.com',
+      target: 'data'
+    },
+    default: '  <script> window.data = []; </script>'
+  }
+];
 
 test('adding injector', function (t) {
   
@@ -26,42 +53,29 @@ test('adding injector', function (t) {
   t.end();
 });
 
-test('parsing blocks', function (t) {
+test.only('parsing blocks', function (t) {
   
   var g = gather();
   
-  var expected = [
-    {
-      name: 'test',
-      location:{
-        start: 8,
-        end: 10
-      },
-      options: {
-        key1: 'value1',
-        key2: 'value2'
-      },
-      default: '  <script> window.__ = {}; </script>'
-    },
-    {
-      name: 'fetch',
-      location: {
-        start: 15,
-        end: 17
-      },
-      options: {
-        url: 'http://google.com',
-        target: 'data'
-      },
-      default: '  <script> window.data = []; </script>'
-    }
-  ];
-  
   g.blocks(TEST1_FILE_PATH, function (err, blocks) {
     
-    t.deepEqual(blocks, expected, 'parsed blocks object');
+    t.deepEqual(blocks, TEST1_FILE_BLOCKS, 'parsed blocks object');
     t.end();
   });
+});
+
+test.skip('parse blocks with incoming stream', function (t) {
+  
+  var g = gather();
+  
+  fs.createReadStream(TEST1_FILE_PATH)
+    .pipe(split())
+    .pipe(g.blocks())
+    .pipe(concat({object: true}, function (blocks) {
+      
+      t.deepEqual(blocks.toString(), TEST1_FILE_BLOCKS, 'parsed blocks object');
+      t.end();
+    }));
 });
 
 test('executes injectors in html from file', function (t) {
@@ -70,7 +84,21 @@ test('executes injectors in html from file', function (t) {
   
   g.injector('test', function (options, done) {
     
+    t.deepEqual(options, {
+      key1: 'value1',
+      key2: 'value2'
+    }, 'passed options into injector');
+    
     done(null, '<!-- injected test -->');
+  });
+  g.injector('fetch', function (options, done) {
+    
+    t.deepEqual(options, {
+      url: 'http://google.com',
+      target: 'data'
+    }, 'passed options into injector');
+    
+    done(null, '<!-- injected fetch -->');
   });
     
   var expected = [
@@ -86,9 +114,7 @@ test('executes injectors in html from file', function (t) {
     '</head>',
     '<body>',
     '  ',
-    '  <!-- inject:fetch url=http://google.com target=data -->',
-    '  <script> window.data = []; </script>',
-    '  <!-- endinject -->',
+    '<!-- injected fetch -->',
     '  ',
     '</body>',
     '</html>'
@@ -96,7 +122,7 @@ test('executes injectors in html from file', function (t) {
   
   g.file(TEST1_FILE_PATH, function (err, content) {
     
-    // t.equal(content, expected, 'injected contents');
+    t.equal(content, expected, 'injected contents');
     t.end();
   });
 });
