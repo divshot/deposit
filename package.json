@@ -4,7 +4,7 @@
   "description": "Gather resources and inject them into your html pages",
   "main": "lib/index.js",
   "scripts": {
-    "test": "node test/index.js | tap-spec"
+    "test": "tape test/**.js | tap-spec"
   },
   "repository": {
     "type": "git",
@@ -31,12 +31,16 @@
   },
   "dependencies": {
     "concat-stream": "^1.4.7",
+    "duplexify": "^3.2.0",
     "end-of-stream": "^1.1.0",
     "lodash": "^2.4.1",
     "split": "^0.3.2",
+    "split2": "^0.2.1",
     "stream-to-array": "^2.0.2",
     "through2": "^0.6.3",
     "through2-filter": "^1.4.0",
+    "through2-map": "^1.4.0",
+    "through2-spy": "^1.2.0",
     "trim": "0.0.1"
   }
 }

@@ -1,11 +1,15 @@
 var fs = require('fs-extra');
-var gather = require('../lib');
+
 var test = require('tape');
-var eos = require('end-of-stream');
 var concat = require('concat-stream');
 var split = require('split');
+var spy = require('through2-spy');
+
+var gather = require('../lib');
 
 var TEST1_FILE_PATH = __dirname + '/fixtures/test1.html';
+var TEST2_FILE_PATH = __dirname + '/fixtures/test2.html';
+
 var TEST1_FILE_BLOCKS = [
   {
     name: 'test',
@@ -33,7 +37,7 @@ var TEST1_FILE_BLOCKS = [
   }
 ];
 
-test('adding injector', function (t) {
+test('default: adding injector', function (t) {
   
   var g = gather();
   
@@ -53,7 +57,27 @@ test('adding injector', function (t) {
   t.end();
 });
 
-test('parsing blocks', function (t) {
+test('blocks: streaming', function (t) {
+  
+  var g = gather();
+  var blockNum = 0;
+  
+  var s = fs.createReadStream(TEST1_FILE_PATH)
+    .pipe(split())
+    .pipe(g.blocks())
+    .pipe(spy.obj(function (line) {
+      
+      blockNum += 1;
+    }))
+    .pipe(concat({object: true}, function (blocks) {
+      
+      t.equal(blockNum, 2, 'number of blocks');
+      t.deepEqual(blocks, TEST1_FILE_BLOCKS, 'parsed blocks object');
+      t.end();
+    }));
+});
+
+test('blocks: callback', function (t) {
   
   var g = gather();
   
@@ -64,21 +88,21 @@ test('parsing blocks', function (t) {
   });
 });
 
-test.skip('parse blocks with incoming stream', function (t) {
+test.skip('injection: inject file streaming', function (t) {
   
   var g = gather();
   
-  fs.createReadStream(TEST1_FILE_PATH)
+  fs.createReadStream(TEST2_FILE_PATH)
     .pipe(split())
-    .pipe(g.blocks())
-    .pipe(concat({object: true}, function (blocks) {
+    .pipe(g.file())
+    .pipe(concat(function (contents) {
       
-      t.deepEqual(blocks.toString(), TEST1_FILE_BLOCKS, 'parsed blocks object');
+      
       t.end();
     }));
 });
 
-test('executes injectors in html from file', function (t) {
+test('injection: inject file with callback', function (t) {
   
   var g = gather();
   
