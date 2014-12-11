@@ -1,7 +1,7 @@
 {
   "name": "deposit",
   "version": "1.0.0",
-  "description": "Gather resources and inject them into your html pages",
+  "description": "Inject dynamic resources into your html pages ",
   "main": "lib/index.js",
   "scripts": {
     "test": "tape test/**.js | tap-spec"
