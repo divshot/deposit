@@ -15,11 +15,11 @@ var fs = require('fs');
 var http = require('http');
 var deposit = require('deposit');
 
-var g = deposit();
+var d = deposit();
 
 // Set up injectors
-g.injector('fetch', require('deposit-fetch'));
-g.injector('env', function (options, done) {
+d.injector('fetch', require('deposit-fetch'));
+d.injector('env', function (options, done) {
   
   // Do stuff
   
@@ -29,7 +29,7 @@ g.injector('env', function (options, done) {
 http.createServer(function (req, res) {
 
   fs.createReadStream('/path/to/some/file.html')
-    .pipe(g)
+    .pipe(d)
     .pipe(res);
 
 }).listen(3000);
@@ -67,17 +67,17 @@ Sample HTML file
 
 * `options`
 
-### g.file(filepath[, function (err, contents) {}])
+### d.injector(name, function (options, done) {})
+
+* `name` - The name of the inejctor. This is the name you will use in your html document. Only slug-valid names are allowed (i.e. `fetch`, `custom-injector`, etc).
+
+### d.tree(filepath[, function (err, contents) {}])
 
 Parse and inject a file. By default, the function returns a stream. You may also provide a callback and it will be called and return the parsed file contents.
 
 * `filepath` - The path to the file to parse and inject.
 
-### g.injector(name, function (options, done) {})
-
-* `name` - The name of the inejctor. This is the name you will use in your html document. Only slug-valid names are allowed (i.e. `fetch`, `custom-injector`, etc).
-
-### g.blocks(filepath, function (err blocks) {})
+### d.blockTree(filepath, function (err blocks) {})
 
 Parse the given html file and return an object representation of the parseable blocks.
 
