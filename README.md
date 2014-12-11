@@ -71,15 +71,15 @@ Sample HTML file
 
 * `name` - The name of the inejctor. This is the name you will use in your html document. Only slug-valid names are allowed (i.e. `fetch`, `custom-injector`, etc).
 
-### d.tree(filepath[, function (err, contents) {}])
+### d.tree([filepath, function (err, contents) {}])
 
-Parse and inject a file. By default, the function returns a stream. You may also provide a callback and it will be called and return the parsed file contents.
+Parse and inject a file. By default, the function returns a stream. You may also provide a callback and it will be called and return the parsed file contents. This method also has a streaming interface.
 
 * `filepath` - The path to the file to parse and inject.
 
-### d.blockTree(filepath, function (err blocks) {})
+### d.blockTree([filepath, function (err blocks) {}])
 
-Parse the given html file and return an object representation of the parseable blocks.
+Parse the given html file and return an object representation of the parseable blocks. This method also has a streaming interface.
 
 * `filepath` - The path to the file to parse and inject.
 
@@ -95,7 +95,8 @@ module.exports = function (options, done) {
 
 The injector function recieves 2 parameters:
 
-* `options` - This is an object map of the options in the commented markup. If the html had `<!-- inject:fetch http://some.site.com/page timeout=5 assign=bob -->`, the options would be
+* `options` - This is an object map of the options in the commented markup. If the html had `<!-- inject:fetch url=http://some.site.com/page timeout=5 assign=bob -->`, the options would be
+  * `url: http://some.site.com/page`
   * `timeout: 5`
   * `assign: bob`
 * `done` - This callback gets called with these values - `done(err, content)`. The content will be injected and replace the commented markup

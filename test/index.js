@@ -36,6 +36,24 @@ var TEST1_FILE_BLOCKS = [
     default: '  <script> window.data = []; </script>'
   }
 ];
+var TEST1_EXPECTED_CONTENT = [
+  '<!DOCTYPE html>',
+  '<html>',
+  '<head>',
+  '  <meta charset="utf-8">',
+  '  <meta http-equiv="X-UA-Compatible" content="IE=edge">',
+  '  <title></title>',
+  '  ',
+  '<!-- injected test -->',
+  '  ',
+  '</head>',
+  '<body>',
+  '  ',
+  '<!-- injected fetch -->',
+  '  ',
+  '</body>',
+  '</html>'
+];
 
 test('default: adding injector', function (t) {
   
@@ -150,32 +168,13 @@ test('injecting: streaming', function (t) {
     
     done(null, '<!-- injected fetch -->');
   });
-    
-  var expected = [
-    '<!DOCTYPE html>',
-    '<html>',
-    '<head>',
-    '  <meta charset="utf-8">',
-    '  <meta http-equiv="X-UA-Compatible" content="IE=edge">',
-    '  <title></title>',
-    '  ',
-    '<!-- injected test -->',
-    '  ',
-    '</head>',
-    '<body>',
-    '  ',
-    '<!-- injected fetch -->',
-    '  ',
-    '</body>',
-    '</html>'
-  ].join('');
   
   fs.createReadStream(TEST1_FILE_PATH)
     .pipe(split())
     .pipe(depositor)
     .pipe(concat(function (html) {
       
-      t.equal(html.toString(), expected, 'injected content');
+      t.equal(html.toString(), TEST1_EXPECTED_CONTENT.join(''), 'injected content');
       t.end();
     }));
 });
@@ -203,28 +202,9 @@ test('injecting: callback', function (t) {
     done(null, '<!-- injected fetch -->');
   });
   
-  var expected = [
-    '<!DOCTYPE html>',
-    '<html>',
-    '<head>',
-    '  <meta charset="utf-8">',
-    '  <meta http-equiv="X-UA-Compatible" content="IE=edge">',
-    '  <title></title>',
-    '  ',
-    '<!-- injected test -->',
-    '  ',
-    '</head>',
-    '<body>',
-    '  ',
-    '<!-- injected fetch -->',
-    '  ',
-    '</body>',
-    '</html>'
-  ].join('\n');
-  
   depositor.parse(TEST1_FILE_PATH, function (err, content) {
     
-    t.equal(content, expected, 'content parsed');
+    t.equal(content, TEST1_EXPECTED_CONTENT.join('\n'), 'content parsed');
     t.end();
   });
 });
