@@ -1,11 +1,11 @@
-# gather ![NPM Version](https://img.shields.io/npm/v/gather.svg?style=flat-square) ![Build Status](https://img.shields.io/travis/divshot/gather/master.svg?style=flat-square) 
+# deposit ![NPM Version](https://img.shields.io/npm/v/deposit.svg?style=flat-square) ![Build Status](https://img.shields.io/travis/divshot/deposit/master.svg?style=flat-square) 
 
 Gather resources and inject them into your html pages
 
 ## Install
 
 ```
-npm install gather --save
+npm install deposit --save
 ```
 
 ## Usage
@@ -13,12 +13,12 @@ npm install gather --save
 ```js
 var fs = require('fs');
 var http = require('http');
-var gather = require('gather');
+var deposit = require('deposit');
 
-var g = gather();
+var g = deposit();
 
 // Set up injectors
-g.injector('fetch', require('gather-fetch'));
+g.injector('fetch', require('deposit-fetch'));
 g.injector('env', function (options, done) {
   
   // Do stuff
@@ -63,7 +63,7 @@ Sample HTML file
 
 ## API
 
-### gather([options])
+### deposit([options])
 
 * `options`
 

@@ -5,11 +5,10 @@ var concat = require('concat-stream');
 var split = require('split');
 var spy = require('through2-spy');
 
-var gather = require('../lib');
+var deposit = require('../lib');
 
 var TEST1_FILE_PATH = __dirname + '/fixtures/test1.html';
 var TEST2_FILE_PATH = __dirname + '/fixtures/test2.html';
-
 var TEST1_FILE_BLOCKS = [
   {
     name: 'test',
@@ -39,32 +38,32 @@ var TEST1_FILE_BLOCKS = [
 
 test('default: adding injector', function (t) {
   
-  var g = gather();
+  var d = deposit();
   
-  g.injector('test', testInjector);  
+  d.injector('test', testInjector);  
   
   function testInjector (options, done) {
     
   }
   
-  t.equal(g.injector('test').toString(), testInjector.toString(), 'added injector');
+  t.equal(d.injector('test').toString(), testInjector.toString(), 'added injector');
   t.throws(function () {
-    g.injector('test', function () {});
+    d.injector('test', function () {});
   }, 'error for overriding injector');
   t.throws(function () {
-    g.injector(function () {});
+    d.injector(function () {});
   }, 'missing injector name');
   t.end();
 });
 
 test('blocks: streaming', function (t) {
   
-  var g = gather();
+  var d = deposit();
   var blockNum = 0;
   
   var s = fs.createReadStream(TEST1_FILE_PATH)
     .pipe(split())
-    .pipe(g.blocks())
+    .pipe(d.blocks())
     .pipe(spy.obj(function (line) {
       
       blockNum += 1;
@@ -79,34 +78,47 @@ test('blocks: streaming', function (t) {
 
 test('blocks: callback', function (t) {
   
-  var g = gather();
+  var d = deposit();
   
-  g.blocks(TEST1_FILE_PATH, function (err, blocks) {
+  d.blocks(TEST1_FILE_PATH, function (err, blocks) {
     
     t.deepEqual(blocks, TEST1_FILE_BLOCKS, 'parsed blocks object');
     t.end();
   });
 });
 
-test.skip('injection: inject file streaming', function (t) {
+test('injection: inject file streaming', function (t) {
   
-  var g = gather();
+  var d = deposit();
+  var blockNum = 0;
+  var contentNum = 0;
   
-  fs.createReadStream(TEST2_FILE_PATH)
+  var s = fs.createReadStream(TEST1_FILE_PATH)
     .pipe(split())
-    .pipe(g.file())
-    .pipe(concat(function (contents) {
+    .pipe(d.file())
+    .pipe(spy.obj(function (line) {
       
+      if (line.type === 'block') {
+        blockNum += 1;
+      }
       
+      if (line.type === 'content') {
+        contentNum += 1;
+      }
+    }))
+    .pipe(concat({object: true}, function (blocks) {
+      
+      t.equal(blockNum, 2, 'number of blocks during parse');
+      t.equal(contentNum, 14, 'number of contents during parse');
       t.end();
     }));
 });
 
-test('injection: inject file with callback', function (t) {
+test.skip('injection: inject file with callback', function (t) {
   
-  var g = gather();
+  var d = deposit();
   
-  g.injector('test', function (options, done) {
+  d.injector('test', function (options, done) {
     
     t.deepEqual(options, {
       key1: 'value1',
@@ -115,7 +127,7 @@ test('injection: inject file with callback', function (t) {
     
     done(null, '<!-- injected test -->');
   });
-  g.injector('fetch', function (options, done) {
+  d.injector('fetch', function (options, done) {
     
     t.deepEqual(options, {
       url: 'http://google.com',
@@ -144,7 +156,7 @@ test('injection: inject file with callback', function (t) {
     '</html>'
   ].join('\n');
   
-  g.file(TEST1_FILE_PATH, function (err, content) {
+  d.file(TEST1_FILE_PATH, function (err, content) {
     
     t.equal(content, expected, 'injected contents');
     t.end();
