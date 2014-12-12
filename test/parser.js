@@ -1,7 +1,7 @@
 var fs = require('fs');
 
 var parser = require('../lib/parser');
-var test = require('tape');
+var test = require('tessed');
 var split = require('split');
 var concat = require('concat-stream');
 var spy = require('through2-spy');
@@ -11,7 +11,9 @@ var pumpify = require('pumpify');
 
 var TEST1_FILE_PATH = __dirname + '/fixtures/test1.html';
 
-test('parser: streaming', function (t) {
+var parsing = test('parser');
+
+parsing.test('streaming', function (t) {
   
   var blockNum = 0;
   
@@ -34,7 +36,7 @@ test('parser: streaming', function (t) {
     }));
 });
 
-test('parser: callback', function (t) {
+parsing.test('callback', function (t) {
   
   fs.createReadStream(TEST1_FILE_PATH)
     .pipe(split())
@@ -46,7 +48,7 @@ test('parser: callback', function (t) {
     }));
 });
 
-test('parser: line', function (t) {
+parsing.test('line', function (t) {
   
   var BLOCK_START = '<!-- inject:something option1=value -->';
   var CONTENT = 'test content';

@@ -1,10 +1,10 @@
 {
   "name": "deposit",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Inject dynamic resources into your html pages ",
   "main": "lib/index.js",
   "scripts": {
-    "test": "tape test/**.js | tap-spec"
+    "test": "tessed test/**.js | tap-spec"
   },
   "repository": {
     "type": "git",
@@ -27,7 +27,7 @@
   "devDependencies": {
     "fs-extra": "^0.12.0",
     "tap-spec": "^2.1.1",
-    "tape": "^3.0.3"
+    "tessed": "^1.0.0"
   },
   "dependencies": {
     "concat-stream": "^1.4.7",

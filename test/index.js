@@ -1,12 +1,16 @@
 var fs = require('fs-extra');
 
 var _ = require('lodash');
-var test = require('tape');
+var test = require('tessed');
 var concat = require('concat-stream');
 var split = require('split');
 var spy = require('through2-spy');
 
 var deposit = require('../lib');
+
+var blockTrees = test('block tree');
+var trees = test('tree');
+var injecting = test('injecting');
 
 var TEST1_FILE_PATH = __dirname + '/fixtures/test1.html';
 var TEST2_FILE_PATH = __dirname + '/fixtures/test2.html';
@@ -55,7 +59,7 @@ var TEST1_EXPECTED_CONTENT = [
   '</html>'
 ];
 
-test('default: adding injector', function (t) {
+test('adding injector', function (t) {
   
   var d = deposit();
   
@@ -75,7 +79,7 @@ test('default: adding injector', function (t) {
   t.end();
 });
 
-test('block tree: streaming', function (t) {
+blockTrees.test('streaming', function (t) {
   
   var d = deposit();
   var blockNum = 0;
@@ -95,7 +99,7 @@ test('block tree: streaming', function (t) {
     }));
 });
 
-test('block tree: callback', function (t) {
+blockTrees.test('callback', function (t) {
   
   var d = deposit();
   
@@ -106,7 +110,7 @@ test('block tree: callback', function (t) {
   });
 });
 
-test('tree: streaming', function (t) {
+trees.test('streaming', function (t) {
   
   var d = deposit();
   var blockNum = 0;
@@ -133,7 +137,7 @@ test('tree: streaming', function (t) {
     }));
 });
 
-test('tree: callback', function (t) {
+trees.test('callback', function (t) {
   
   var d = deposit();
   
@@ -146,7 +150,7 @@ test('tree: callback', function (t) {
   });
 });
 
-test('injecting: streaming', function (t) {
+injecting.test('streaming', function (t) {
   
   var depositor = deposit();
   
@@ -179,7 +183,7 @@ test('injecting: streaming', function (t) {
     }));
 });
 
-test('injecting: callback', function (t) {
+injecting.test('callback', function (t) {
   
   var depositor = deposit();
   
