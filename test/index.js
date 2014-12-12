@@ -213,4 +213,19 @@ injecting.test('callback', function (t) {
   });
 });
 
+injecting.test('undefined value in callback', function (t) {
+  
+  var depositor = deposit();
+  
+  depositor.injector('test', function (options, done) {
+    
+    done();
+  });
+  
+  depositor.parse(TEST1_FILE_PATH, function (err, content) {
+    
+    t.end();
+  });
+});
+
 test('automaticlly stringifies no string data from injectors');
