@@ -11,6 +11,7 @@ var deposit = require('../lib');
 var blockTrees = test('block tree');
 var trees = test('tree');
 var injecting = test('injecting');
+var injectTrees = test('inject tree');
 
 var TEST1_FILE_PATH = __dirname + '/fixtures/test1.html';
 var TEST2_FILE_PATH = __dirname + '/fixtures/test2.html';
@@ -150,6 +151,63 @@ trees.test('callback', function (t) {
   });
 });
 
+injectTrees.test('streaming', function (t) {
+  
+  var d = deposit();
+  
+  d.injector('fetch', function (options, done) {
+    
+    done(null, '<!-- my data -->');
+  });
+  
+  var s = fs.createReadStream(TEST1_FILE_PATH)
+    .pipe(split())
+    .pipe(d.tree())
+    .pipe(d.injectTree())
+    .pipe(concat({object: true}, function (lines) {
+      
+      var injectedBlock = _(lines)
+        .filter({type: 'block'})
+        .filter(function (block) {
+          
+          return block.content.injected;
+        })
+        .first();
+      
+      t.ok(injectedBlock, 'injected block');
+      t.equal(injectedBlock.content.injected, '<!-- my data -->', 'injected block data');
+      t.end();
+    }));
+});
+
+injectTrees.test('callback', function (t) {
+  
+  var d = deposit();
+  
+  d.injector('fetch', function (options, done) {
+      
+    done(null, '<!-- my data -->');
+  });
+  
+  d.tree(TEST1_FILE_PATH, function (err, tree) {
+    
+    d.injectTree(tree, function (err, lines) {
+      
+      var injectedBlock = _(lines)
+        .filter({type: 'block'})
+        .filter(function (block) {
+          
+          return block.content.injected;
+        })
+        .first();
+      
+      t.ok(injectedBlock, 'injected block');
+      t.equal(injectedBlock.content.injected, '<!-- my data -->', 'injected block data');
+      t.end();
+    });
+  });
+});
+
 injecting.test('streaming', function (t) {
   
   var depositor = deposit();
@@ -231,5 +289,3 @@ injecting.test('undefined value in callback', function (t) {
     t.end();
   });
 });
-
-test('automaticlly stringifies no string data from injectors');
