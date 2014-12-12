@@ -158,7 +158,8 @@ injecting.test('streaming', function (t) {
     
     t.deepEqual(options, {
       key1: 'value1',
-      key2: 'value2'
+      key2: 'value2',
+      default: '  <script> window.__ = {}; </script>'
     }, 'passed options into injector');
     
     done(null, '<!-- injected test -->');
@@ -167,7 +168,8 @@ injecting.test('streaming', function (t) {
     
     t.deepEqual(options, {
       url: 'http://google.com',
-      target: 'data'
+      target: 'data',
+      default: '  <script> window.data = []; </script>'
     }, 'passed options into injector');
     
     done(null, '<!-- injected fetch -->');
@@ -191,7 +193,8 @@ injecting.test('callback', function (t) {
     
     t.deepEqual(options, {
       key1: 'value1',
-      key2: 'value2'
+      key2: 'value2',
+      default: '  <script> window.__ = {}; </script>'
     }, 'passed options into injector');
     
     done(null, '<!-- injected test -->');
@@ -200,7 +203,8 @@ injecting.test('callback', function (t) {
     
     t.deepEqual(options, {
       url: 'http://google.com',
-      target: 'data'
+      target: 'data',
+      default: '  <script> window.data = []; </script>'
     }, 'passed options into injector');
     
     done(null, '<!-- injected fetch -->');
